@@ -20,10 +20,18 @@ app.get("/api/v1/tours", (req, res) => {
 //params example:/api/v1/tours/:id/:x/:y
 //optional parameters (make y optional): /api/v1/:id/:y?
 app.get("/api/v1/tours/:id", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    //   data: { tours },
-  });
+  const tour = tours.find((el) => el.id * 1 === req.params.id);
+  if (tour) {
+    res.status(200).json({
+      status: "success",
+      data: { tour },
+    });
+  } else {
+    res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    });
+  }
 });
 
 app.post("/api/v1/tours", (req, res) => {
