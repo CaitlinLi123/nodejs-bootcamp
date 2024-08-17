@@ -60,6 +60,17 @@ app.patch("/api/v1/tours/:id", (req, res) => {
     .json({ status: "success", data: { tour: "updated tour here" } });
 });
 
+app.delete("/api/v1/tours/:id", (req, res) => {
+  const id = req.params.id * 1;
+  const tour = tours.find((el) => el.id === id);
+  if (!tour) {
+    res.status(404).json({ status: "fail", message: "Invalid ID" });
+  }
+  res
+    .status(200)
+    .json({ status: "success", data: { tour: "delete the tour." } });
+});
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
