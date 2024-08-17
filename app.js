@@ -8,7 +8,13 @@ const tours = JSON.parse(
 const app = express();
 
 //middleware
-app.use(express.json());
+app.use(express.json()); //bodyParser
+
+//self-defined middleware
+app.use((req, res, next) => {
+  console.log("hello from the middleware🏝️");
+  next();
+});
 
 const getAllTours = (req, res) => {
   res.status(200).json({
@@ -77,6 +83,12 @@ app
   .get(getTourById)
   .patch(updateTour)
   .delete(deleteTour);
+//IN this case this middleware will not be triggered if the response is sent back from /api/v1/tours/:id because the event loop ends
+//the middleware order is app.route(".../:id") , self-defined one and the app.route("/api/v1/tours")
+//   app.use((req, res, next) => {
+//     console.log("hello from the middleware🏝️");
+//     next();
+//   });
 app.route("/api/v1/tours").get(getAllTours).post(createNewTour);
 
 const port = 3000;
