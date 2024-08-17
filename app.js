@@ -118,27 +118,16 @@ const deleteUser = (req, res) => {
 // 3) ROUTES
 
 //TOURS ROUTES:
-app
-  .route("/api/v1/tours/:id")
-  .get(getTourById)
-  .patch(updateTour)
-  .delete(deleteTour);
-//IN this case this middleware will not be triggered if the response is sent back from /api/v1/tours/:id because the event loop ends
-//the middleware order is app.route(".../:id") , self-defined one and the app.route("/api/v1/tours")
-//   app.use((req, res, next) => {
-//     console.log("hello from the middleware🏝️");
-//     next();
-//   });
-app.route("/api/v1/tours").get(getAllTours).post(createNewTour);
+const tourRouter = express.Router();
+app.use("/api/v1/tours", tourRouter);
+tourRouter.route("/:id").get(getTourById).patch(updateTour).delete(deleteTour);
+tourRouter.route("/").get(getAllTours).post(createNewTour);
 
 //USER ROUTES:
-app.route("/api/v1/users").get(getAllUsers).post(createUser);
-
-app
-  .route("/api/v1/users/:id")
-  .get(getUserById)
-  .patch(updateUser)
-  .delete(deleteUser);
+const userRouter = express.Router();
+app.use("/api/v1/users", userRouter);
+app.route("/").get(getAllUsers).post(createUser);
+app.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);
 
 // 4) START SERVER
 const port = 3000;
