@@ -2,6 +2,20 @@ const fs = require("fs");
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
+
+//param middleware, so we have a fourth parameter val
+exports.checkID = (req, res, next, val) => {
+  if (req.params.id * 1 > tours.length) {
+    //if no return, then the loop will execute next() and jump to next middleware and return back other response
+    //after return, next() will not be called
+    return res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    });
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: "success",
@@ -18,11 +32,6 @@ exports.getTourById = (req, res) => {
     res.status(200).json({
       status: "success",
       data: { tour },
-    });
-  } else {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
     });
   }
 };
@@ -44,9 +53,6 @@ exports.createNewTour = (req, res) => {
 exports.updateTour = (req, res) => {
   const id = req.params.id * 1;
   const tour = tours.find((el) => el.id === id);
-  if (!tour) {
-    res.status(404).json({ status: "fail", message: "Invalid ID" });
-  }
   res
     .status(200)
     .json({ status: "success", data: { tour: "updated tour here" } });
@@ -55,9 +61,6 @@ exports.updateTour = (req, res) => {
 exports.deleteTour = (req, res) => {
   const id = req.params.id * 1;
   const tour = tours.find((el) => el.id === id);
-  if (!tour) {
-    res.status(404).json({ status: "fail", message: "Invalid ID" });
-  }
   res
     .status(200)
     .json({ status: "success", data: { tour: "delete the tour." } });
