@@ -1,70 +1,89 @@
 const fs = require("fs");
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
+// const tours = JSON.parse(
+//   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
+// );
 
 const Tour = require("./../models/tourModel");
 
 //param middleware, so we have a fourth parameter val
 
 //check the request body if it contains name and price property
-exports.checkBody = (req, res, next) => {
-  if (!req.body.name || !req.body.price) {
-    //400: bad request
-    return res.status(400).json({
+
+exports.getAllTours = async (req, res) => {
+  try {
+    const tours = await Tour.find();
+    res.status(200).json({
+      status: "success",
+      data: { tours },
+    });
+  } catch (error) {
+    res.status(400).json({
       status: "fail",
-      message: "Missing name or price",
+      message: error,
     });
   }
-  next();
-};
-
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    data: { tours },
-  });
 };
 
 //params example:/api/v1/tours/:id/:x/:y
 //optional parameters (make y optional): /api/v1/:id/:y?
 
-exports.getTourById = (req, res) => {
-  const tour = tours.find((el) => el.id === req.params.id * 1);
-  if (tour) {
-    res.status(200).json({
-      status: "success",
-      data: { tour },
+exports.getTourById = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
+    //Tour.findOne({_id:req.params.id})
+    if (tour) {
+      res.status(200).json({
+        status: "success",
+        data: { tour },
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error,
     });
   }
 };
-exports.createTour = (req, res) => {
-  const newId = tours[tours.length - 1].id + 1;
-  //merge and create a new object: Object.assign
-  const newTour = Object.assign({ id: newId }, req.body);
-  tours.push(newTour);
-  //inside the eventloop, cannot block it, thus we need to use asynchronous version of write file
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      res.status(201).json({ status: "success", data: { tour: newTour } });
-    }
-  );
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+    res.status(201).json({
+      status: "success",
+      data: { newTour },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error,
+    });
+  }
+  //const newTour = new Tour({})
+  //newTour.save()
 };
 
-exports.updateTour = (req, res) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
-  res
-    .status(200)
-    .json({ status: "success", data: { tour: "updated tour here" } });
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({ status: "success", data: { tour } });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error,
+    });
+  }
 };
 
-exports.deleteTour = (req, res) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
-  res
-    .status(200)
-    .json({ status: "success", data: { tour: "delete the tour." } });
+exports.deleteTour = async (req, res) => {
+  try {
+    await Tour.findByIdAndDelete(req.params.id);
+    res.status(204).json({ status: "success", data: null });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error,
+    });
+  }
 };
