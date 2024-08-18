@@ -12,12 +12,22 @@ const { query } = require("express");
 
 exports.getAllTours = async (req, res) => {
   try {
-    //QUERY
+    //BUILD QUERY
+    //1)FILTERING
     //a new object contains every key value pairs
-    const queryObj = { ...req.query };
+    let queryObj = { ...req.query };
     const excludedFields = ["page", "sort", "limit", "fields"];
     //clean the query first and then execute the query because we use await so only result can be sent back and impossible to sort or pagination again
     excludedFields.forEach((el) => delete queryObj[el]);
+
+    //2)ADVANCED FILTERING
+    let queryStr = JSON.stringify(queryObj);
+    //regular expression
+    //exact words:\b b\, multiple times:g
+
+    //original queryStr:  //{ difficulty: 'easy', duration: { gte: '3' } }
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    queryObj = JSON.parse(queryStr);
     //this return a query
     const query = Tour.find(queryObj);
     const tours = await query;
