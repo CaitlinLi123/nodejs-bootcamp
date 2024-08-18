@@ -8,6 +8,7 @@ const app = express();
 // 1) MIDDLEWARE
 app.use(morgan("dev"));
 app.use(express.json()); //bodyParser
+app.use(express.static(`${__dirname}/public`)); //serve static file
 
 //self-defined middleware
 app.use((req, res, next) => {
@@ -15,17 +16,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// 2) ROUTE HANDLERS
-
-// 3) ROUTES
+// 2) ROUTES
 
 //Mount the routes
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 
-// 4) START SERVER
-// const port = 3000;
-// app.listen(port, () => {
-//   console.log(`App running on port ${port}...`);
-// });
 module.exports = app;
