@@ -8,10 +8,11 @@ const router = express.Router();
 //param middleware
 //the middlewares in the app.js will be executed first, and then execute the middlewares in tourRoutes.js
 router.param("id", tourController.checkID);
+
 router
   .route("/")
   .get(tourController.getAllTours)
-  .post(tourController.createNewTour);
+  .post(tourController.checkBody, tourController.createTour);
 router
   .route("/:id")
   .get(tourController.getTourById)

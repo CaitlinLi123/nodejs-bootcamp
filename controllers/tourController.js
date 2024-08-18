@@ -16,6 +16,18 @@ exports.checkID = (req, res, next, val) => {
   next();
 };
 
+//check the request body if it contains name and price property
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    //400: bad request
+    return res.status(400).json({
+      status: "fail",
+      message: "Missing name or price",
+    });
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: "success",
@@ -35,7 +47,7 @@ exports.getTourById = (req, res) => {
     });
   }
 };
-exports.createNewTour = (req, res) => {
+exports.createTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   //merge and create a new object: Object.assign
   const newTour = Object.assign({ id: newId }, req.body);
