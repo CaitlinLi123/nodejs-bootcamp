@@ -50,6 +50,16 @@ exports.getAllTours = async (req, res) => {
     }
 
     //5)PAGINATION
+    //page=2&limit=10, 1-10,page 1; 11-20, page 2
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+    if (req.query.page) {
+      //return the number of documents
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw new Error("This page does not exist");
+    }
 
     //GET THE RESULTS
     const tours = await query;
