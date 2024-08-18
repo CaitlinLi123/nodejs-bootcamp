@@ -3,18 +3,9 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+const Tour = require("./../models/tourModel");
+
 //param middleware, so we have a fourth parameter val
-exports.checkID = (req, res, next, val) => {
-  if (req.params.id * 1 > tours.length) {
-    //if no return, then the loop will execute next() and jump to next middleware and return back other response
-    //after return, next() will not be called
-    return res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    });
-  }
-  next();
-};
 
 //check the request body if it contains name and price property
 exports.checkBody = (req, res, next) => {

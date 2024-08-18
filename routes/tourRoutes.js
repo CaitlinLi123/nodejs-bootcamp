@@ -7,7 +7,7 @@ const router = express.Router();
 
 //param middleware
 //the middlewares in the app.js will be executed first, and then execute the middlewares in tourRoutes.js
-router.param("id", tourController.checkID);
+// router.param("id", tourController.checkID);
 
 router
   .route("/")
