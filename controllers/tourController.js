@@ -4,6 +4,7 @@ const fs = require("fs");
 // );
 
 const Tour = require("./../models/tourModel");
+const { query } = require("express");
 
 //param middleware, so we have a fourth parameter val
 
@@ -11,7 +12,17 @@ const Tour = require("./../models/tourModel");
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    //QUERY
+    //a new object contains every key value pairs
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    //clean the query first and then execute the query because we use await so only result can be sent back and impossible to sort or pagination again
+    excludedFields.forEach((el) => delete queryObj[el]);
+    //this return a query
+    const query = Tour.find(queryObj);
+    const tours = await query;
+
+    //SEND RESPONSE
     res.status(200).json({
       status: "success",
       data: { tours },
