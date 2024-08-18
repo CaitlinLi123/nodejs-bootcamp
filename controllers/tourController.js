@@ -28,8 +28,19 @@ exports.getAllTours = async (req, res) => {
     //original queryStr:  //{ difficulty: 'easy', duration: { gte: '3' } }
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     queryObj = JSON.parse(queryStr);
+
+    //EXECUTE QUERY
     //this return a query
-    const query = Tour.find(queryObj);
+    let query = Tour.find(queryObj);
+    //3)SORTING
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    //GET THE RESULTS
     const tours = await query;
 
     //SEND RESPONSE
