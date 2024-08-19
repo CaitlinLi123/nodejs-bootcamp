@@ -4,11 +4,13 @@ const fs = require("fs");
 // );
 
 const Tour = require("./../models/tourModel");
-const { query } = require("express");
 
-//param middleware, so we have a fourth parameter val
-
-//check the request body if it contains name and price property
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = "5";
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "name,price,ratingsAverage,summary,difficulty";
+  next();
+};
 
 exports.getAllTours = async (req, res) => {
   try {
