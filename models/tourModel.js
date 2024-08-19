@@ -65,29 +65,26 @@ tourSchema.virtual("durationWeeks").get(function () {
 //Document middleware: runs before .save() and .create()
 //presave hook/ presave middleware
 tourSchema.pre("save", function (next) {
-  this.slug = slugify(this.name, { lower: true });
+  this.slug = slugify(this.name, { lower: true }); //point to the current document
   next();
 });
-
-// tourSchema.pre("save", function (next) {
-//   console.log("Will save document...");
-//   next();
-// });
-
-// tourSchema.post("save", function (doc, next) {
-//   console.log(doc);
-//   next();
-// });
 
 //query middleware
 //any query starts with 'find'
 tourSchema.pre(/^find/, function (next) {
-  this.find({ secretTour: { $ne: true } });
+  this.find({ secretTour: { $ne: true } }); //point to the query
   next();
 });
 
 tourSchema.post(/^find/, function (next) {
   console.log(docs);
+  next();
+});
+
+//aggregation middleware
+tourSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log(this.pipeline()); //point to the current aggregation object
   next();
 });
 
