@@ -4,6 +4,7 @@ const APIFeatures = require("../utils/apiFeatures");
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
 const catchAsync = require("./../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 const Tour = require("./../models/tourModel");
 
@@ -36,12 +37,16 @@ exports.getAllTours = catchAsync(async (req, res) => {
 exports.getTourById = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
   //Tour.findOne({_id:req.params.id})
-  if (tour) {
-    res.status(200).json({
-      status: "success",
-      data: { tour },
-    });
+
+  //only trigger when the id length is the same but different id;
+  //if id length is different, then the error comes from catchAsync
+  if (!tour) {
+    return next(new AppError("No tour found with that ID", 404));
   }
+  res.status(200).json({
+    status: "success",
+    data: { tour },
+  });
 });
 
 exports.createTour = catchAsync(async (req, res, next) => {
