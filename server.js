@@ -12,11 +12,33 @@ const app = require("./app");
 // console.log(process.env);
 
 const DB = process.env.DATABASE_LOCAL;
-mongoose.connect(DB).then(() => {
-  console.log("MongoDB connection successful!");
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log("MongoDB connection successful!");
+  })
+  .catch((err) => console.log("ERROR"));
+
+process.on("uncaughtException", (err) => {
+  console.log("Uncaught Exception! 🤯 Shutting down...");
+  //let the server finishes all the pending request and then kill the server
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });
 
 const port = process.env.PORT || 8000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
+});
+
+//global unhandled rejection error handling i.e. wrong db password
+process.on("unhandledRejection", (err) => {
+  console.log(err.name, err.message);
+  console.log("Unhandled Rejection! 🤯 Shutting down...");
+  //let the server finishes all the pending request and then kill the server
+  server.close(() => {
+    process.exit(1);
+  });
 });
