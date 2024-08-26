@@ -4,6 +4,7 @@ const tourController = require("./../controllers/tourController");
 //optional parameters (make y optional): /api/v1/:id/:y?
 
 const router = express.Router();
+const authController = require("../controllers/authController");
 
 //param middleware
 //the middlewares in the app.js will be executed first, and then execute the middlewares in tourRoutes.js
@@ -18,7 +19,7 @@ router.route("/monthly-plan/:year").get(tourController.getMonthlyPlan);
 
 router
   .route("/")
-  .get(tourController.getAllTours)
+  .get(authController.protect, tourController.getAllTours)
   .post(tourController.createTour);
 router
   .route("/:id")
