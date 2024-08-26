@@ -1,4 +1,3 @@
-const fs = require("fs");
 const APIFeatures = require("../utils/apiFeatures");
 // const tours = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
