@@ -7,7 +7,7 @@ const AppError = require("../utils/appError");
 const signToken = (id) => {
   return jwt.sign(
     {
-      id,
+      id: id,
     },
     process.env.JWT_SECRET,
     {
@@ -44,7 +44,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError("Incorrect email or password", 401));
   }
   //3) if everything ok, send the token back
-  const token = signToken(user.__id);
+  const token = signToken(user._id);
   res.status(200).json({
     status: "success",
     token,
@@ -55,13 +55,12 @@ exports.protect = catchAsync(async (req, res, next) => {
   //1)Getting token and check if it exists
   let token;
   if (
-    req.headers.authoization &&
-    req.headers.authoization.startsWith("Bearer")
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
   ) {
     //the authorization header format is 'Bearer xxxxxx'
-    token = req.headers.authoization.split(" ")[1];
+    token = req.headers.authorization.split(" ")[1];
   }
-
   if (!token) {
     //401: not authorized
     return next(
@@ -72,9 +71,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   //the 3rd argument of the jwt.verify function is a callback function that is executed after the verfication finishes
   //promisify: return a promise
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
+  console.log("decoded", decoded);
   //3)Check if user still exists
   const currentUser = await User.findById(decoded.id);
+
   if (!currentUser) {
     return next(new AppError("The user no longer exists.", 401));
   }
@@ -90,3 +90,17 @@ exports.protect = catchAsync(async (req, res, next) => {
   //grant access to protected route
   next();
 });
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles is an array: ['admin','lead-guide'] role='user'
+    if (!roles.includes(req.user.role)) {
+      return next(
+        //forbidden
+        new AppError("You do not have permission to perform this action!", 403)
+      );
+    }
+
+    next();
+  };
+};
