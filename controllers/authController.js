@@ -73,7 +73,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   //the 3rd argument of the jwt.verify function is a callback function that is executed after the verfication finishes
   //promisify: return a promise
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log("decoded", decoded);
   //3)Check if user still exists
   const currentUser = await User.findById(decoded.id);
 
