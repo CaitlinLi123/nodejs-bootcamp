@@ -5,25 +5,36 @@ const userRouter = require("./routes/userRoutes");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 
 const app = express();
 
 // 1) GLOBAL MIDDLEWARE
 
+// Set security HTTP headers
+app.use(helmet());
+
+// Developmet logging
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+// Limit requests from same API
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour.",
 });
 app.use("/api", limiter);
-app.use(express.json()); //bodyParser
+
+// Body parser, reading data from body into req.body
+//set limit to the data size sent to server
+app.use(express.json({ limit: "10kb" }));
+
+// Serving static files
 app.use(express.static(`${__dirname}/public`)); //serve static file
 
-//self-defined middleware
+// Test middleware, self-defined middleware
 app.use((req, res, next) => {
   console.log("hello from the middleware🏝️");
   next();
