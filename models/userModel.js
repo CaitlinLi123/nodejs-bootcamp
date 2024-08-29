@@ -54,6 +54,16 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.pre("save", function (next) {
+  //if the password is not modified or we are signing up and create a new user document, we don't need to update the passwordChangeAt
+  if (!this.isModified("password") || this.isNew) return next();
+
+  // sometimes the function is executed later than issue the new token to user, and thus will lead to passwordChangeAt later than the token timestamp, fail to log in
+  //minus 1 sec to ensure the the passwordChangeAt is always later than modifiy time
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 //instance method: available to all documents to certain collection
 
 userSchema.methods.correctPassword = async function (
