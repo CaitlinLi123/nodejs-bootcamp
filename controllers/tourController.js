@@ -34,6 +34,7 @@ exports.getAllTours = catchAsync(async (req, res) => {
 //optional parameters (make y optional): /api/v1/:id/:y?
 
 exports.getTourById = catchAsync(async (req, res, next) => {
+  //only populate in the query
   const tour = await Tour.findById(req.params.id);
   //Tour.findOne({_id:req.params.id})
 
