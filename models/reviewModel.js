@@ -1,7 +1,7 @@
 const { Mongoose, default: mongoose, mongo } = require("mongoose");
 
 //review / rating/ created At/ ref to tour/ ref to user
-const reviewSchema = new Mongoose.Schema(
+const reviewSchema = new mongoose.Schema(
   {
     review: { type: String, required: [true, "Review cannot be empty"] },
     rating: { type: Number, min: 1, max: 5 },
