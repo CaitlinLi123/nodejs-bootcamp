@@ -35,7 +35,7 @@ exports.getAllTours = catchAsync(async (req, res) => {
 
 exports.getTourById = catchAsync(async (req, res, next) => {
   //only populate in the query
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate("reviews");
   //Tour.findOne({_id:req.params.id})
 
   //only trigger when the id length is the same but different id;
