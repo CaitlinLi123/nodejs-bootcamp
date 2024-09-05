@@ -1,5 +1,6 @@
 const express = require("express");
 const tourController = require("./../controllers/tourController");
+const reviewController = require("./../controllers/reviewController");
 //params example:/api/v1/tours/:id/:x/:y
 //optional parameters (make y optional): /api/v1/:id/:y?
 
@@ -29,6 +30,15 @@ router
     authController.protect,
     authController.restrictTo("admin", "lead-guide"),
     tourController.deleteTour
+  );
+
+//nested routes for review
+router
+  .route("/:tourId/reviews")
+  .post(
+    authController.protect,
+    authController.restrictTo("user"),
+    reviewController.createReview
   );
 
 module.exports = router;
