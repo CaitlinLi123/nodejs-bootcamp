@@ -159,7 +159,12 @@ tourSchema.pre(/^find/, function (next) {
 
 //aggregation middleware
 tourSchema.pre("aggregate", function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  if (Object.keys(this.pipeline()[0])[0] === "$geoNear") {
+    this.pipeline().push({ $match: { secretTour: { $ne: true } } });
+  } else {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  }
+
   console.log(this.pipeline()); //point to the current aggregation object
   next();
 });
