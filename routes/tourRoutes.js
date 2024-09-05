@@ -1,11 +1,16 @@
 const express = require("express");
 const tourController = require("./../controllers/tourController");
 const reviewController = require("./../controllers/reviewController");
+const reviewRouter = require("../routes/reviewRoutes");
 //params example:/api/v1/tours/:id/:x/:y
 //optional parameters (make y optional): /api/v1/:id/:y?
 
 const router = express.Router();
 const authController = require("../controllers/authController");
+
+//mounting review router
+//tourId will be passed to reviewRouter by using mergeParam
+router.use("/:tourId/reviews", reviewRouter);
 
 //param middleware
 //the middlewares in the app.js will be executed first, and then execute the middlewares in tourRoutes.js
