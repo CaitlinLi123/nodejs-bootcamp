@@ -102,6 +102,13 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+//improve read performance by setting index
+// tourSchema.index({ price: 1 }); //ascending order
+//in MongoDB now only need to scan 3 documents
+//compound index:
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 //virtual property: not stored in the db
 //cannot be applied to find directly
 tourSchema.virtual("durationWeeks").get(function () {
