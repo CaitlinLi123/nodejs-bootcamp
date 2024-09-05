@@ -1,9 +1,8 @@
-const APIFeatures = require("../utils/apiFeatures");
 // const tours = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
 const catchAsync = require("./../utils/catchAsync");
-const AppError = require("../utils/appError");
+// const AppError = require("../utils/appError");
 
 const Tour = require("./../models/tourModel");
 
@@ -16,40 +15,12 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res) => {
-  //GET THE RESULTS
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const tours = await features.query;
-
-  //SEND RESPONSE
-  res.status(200).json({
-    status: "success",
-    data: { tours },
-  });
-});
+exports.getAllTours = factory.getAll(Tour);
 
 //params example:/api/v1/tours/:id/:x/:y
 //optional parameters (make y optional): /api/v1/:id/:y?
 
-exports.getTourById = catchAsync(async (req, res, next) => {
-  //only populate in the query
-  const tour = await Tour.findById(req.params.id).populate("reviews");
-  //Tour.findOne({_id:req.params.id})
-
-  //only trigger when the id length is the same but different id;
-  //if id length is different, then the error comes from catchAsync
-  if (!tour) {
-    return next(new AppError("No tour found with that ID", 404));
-  }
-  res.status(200).json({
-    status: "success",
-    data: { tour },
-  });
-});
+exports.getTour = factory.getOne(Tour, { path: "reviews" });
 
 exports.createTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);

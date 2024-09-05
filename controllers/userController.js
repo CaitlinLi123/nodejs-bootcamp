@@ -1,4 +1,4 @@
-const APIFeatures = require("../utils/apiFeatures");
+// const APIFeatures = require("../utils/apiFeatures");
 // const tours = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
@@ -18,29 +18,15 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  //SEND RESPONSE
-  res.status(200).json({
-    results: users.length,
-    status: "success",
-    data: { users },
-  });
-});
+exports.getAllUsers = factory.getAll(User);
 
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: "error",
-    message: "This route is not yet defined!",
+    message: "This route is not defined! Please use /signup instead",
   });
 };
-exports.getUserById = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  });
-};
+exports.getUser = factory.getOne(User);
 
 //Do NOT update password in this route!
 exports.updateUser = factory.updateOne(User);
