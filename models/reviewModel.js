@@ -1,4 +1,5 @@
 const { Mongoose, default: mongoose, mongo } = require("mongoose");
+const Tour = require("./tourModel");
 
 //review / rating/ created At/ ref to tour/ ref to user
 const reviewSchema = new mongoose.Schema(
@@ -33,6 +34,52 @@ reviewSchema.pre(/^find/, function (next) {
       select: "name photo",
     });
   next();
+});
+
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  //aggregate only works on model
+  //this point to model
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: "$tour",
+        nRating: { $sum: 1 },
+        avgRating: { $avg: "$rating" },
+      },
+    },
+  ]);
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[[0].avgRating],
+    });
+  } else {
+    //when there are no matching, stats can be empty array
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
+};
+
+reviewSchema.post("save", function () {
+  //this points to current review
+  //Review.calcAverageRatings : Review haven't been defined
+  //this.constructor points to the model that creates the document
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  //this point to current query
+  this.r = await this.findOne();
+  next();
+});
+
+reviewSchema.post(/^findOnAnd/, async function () {
+  await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 const Review = mongoose.model("Review", reviewSchema);
