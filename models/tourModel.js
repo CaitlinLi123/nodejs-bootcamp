@@ -109,6 +109,7 @@ const tourSchema = new mongoose.Schema(
 //compound index:
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: "2dsphere" });
 
 //virtual property: not stored in the db
 //cannot be applied to find directly
