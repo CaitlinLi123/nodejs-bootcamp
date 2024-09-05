@@ -4,6 +4,7 @@ const APIFeatures = require("../utils/apiFeatures");
 // );
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("../utils/appError");
+const factory = require("./handlerFactory");
 
 const User = require("./../models/userModel");
 
@@ -88,3 +89,5 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.deleteUser = factory.deleteOne(User);

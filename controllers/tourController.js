@@ -7,6 +7,8 @@ const AppError = require("../utils/appError");
 
 const Tour = require("./../models/tourModel");
 
+const factory = require("./handlerFactory");
+
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = "5";
   req.query.sort = "-ratingsAverage,price";
@@ -68,10 +70,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: "success", data: { tour } });
 });
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  await Tour.findByIdAndDelete(req.params.id);
-  res.status(204).json({ status: "success", data: null });
-});
+exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
