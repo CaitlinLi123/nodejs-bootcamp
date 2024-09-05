@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const path = require("path");
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
@@ -12,6 +13,12 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 
 const app = express();
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+// Serving static files
+app.use(express.static(path.join(__dirname, "public"))); //serve static file
 
 // 1) GLOBAL MIDDLEWARE
 
@@ -56,9 +63,6 @@ app.use(
   })
 );
 
-// Serving static files
-app.use(express.static(`${__dirname}/public`)); //serve static file
-
 // Test middleware, self-defined middleware
 app.use((req, res, next) => {
   console.log("hello from the middleware🏝️");
@@ -66,6 +70,9 @@ app.use((req, res, next) => {
 });
 
 // 2) ROUTES
+app.use("/", (req, res) => {
+  res.status(200).render("base");
+});
 
 //Mount the routes
 app.use("/api/v1/tours", tourRouter);
