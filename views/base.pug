@@ -6,14 +6,15 @@ html
         link(href="https://fonts.googleapis.com/css?family=Lato:300,300i,700" rel="stylesheet")
         meta(charset="UTF-8")
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title Natours | Exciting tours for adventurous people
+        title Natours | #{title}
 
     body 
         // HEADER
         include _header
+
         //Content
-        section.overview 
-            h1= tour
+        block content
+            h1 This is a placeholder heading
 
         // FOOTER
         include _footer
