@@ -67,12 +67,12 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
   }
 };
 
-reviewSchema.post("save", function () {
-  //this points to current review
-  //Review.calcAverageRatings : Review haven't been defined
-  //this.constructor points to the model that creates the document
-  this.constructor.calcAverageRatings(this.tour);
-});
+// reviewSchema.post("save", function () {
+//   //this points to current review
+//   //Review.calcAverageRatings : Review haven't been defined
+//   //this.constructor points to the model that creates the document
+//   this.constructor.calcAverageRatings(this.tour);
+// });
 
 reviewSchema.pre(/^findOneAnd/, async function (next) {
   //this point to current query
