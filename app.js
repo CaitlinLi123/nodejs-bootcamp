@@ -71,7 +71,10 @@ app.use((req, res, next) => {
 
 // 2) ROUTES
 app.use("/", (req, res) => {
-  res.status(200).render("base");
+  res.status(200).render("base", {
+    tour: "The Forest Hiker",
+    user: "Jonas",
+  });
 });
 
 //Mount the routes
