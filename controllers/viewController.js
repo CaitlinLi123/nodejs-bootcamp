@@ -1,5 +1,16 @@
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
+const helmet = require("helmet");
+
+helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'", "https:", "http:", "data:", "ws:"],
+    baseUri: ["'self'"],
+    fontSrc: ["'self'", "https:", "http:", "data:"],
+    scriptSrc: ["'self'", "https:", "http:", "blob:"],
+    styleSrc: ["'self'", "'unsafe-inline'", "https:", "http:"],
+  },
+});
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   //1) Get tour data from collection
@@ -17,8 +28,14 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 
   //3) render template
-  res.status(200).render("tour", {
-    title: "The Forest Hiker Tour",
-    tour,
-  });
+  res
+    .status(200)
+    .set(
+      "Content-Security-Policy",
+      "default-src 'self' https://*.mapbox.com ;base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src https://cdnjs.cloudflare.com https://api.mapbox.com 'self' blob: ;script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests;"
+    )
+    .render("tour", {
+      title: `${tour.name}`,
+      tour,
+    });
 });
