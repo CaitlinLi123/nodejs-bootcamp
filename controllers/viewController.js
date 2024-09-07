@@ -2,6 +2,7 @@ const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
 const helmet = require("helmet");
 const AppError = require("../utils/appError");
+const User = require("../models/userModel");
 
 helmet.contentSecurityPolicy({
   directives: {
@@ -62,3 +63,22 @@ exports.getAccount = (req, res) => {
     title: "Your account",
   });
 };
+
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  //if we don't pass in user, then the user is the user in the protect middleware
+  res.status(200).render("account", {
+    title: "Your account",
+    user: updatedUser,
+  });
+});
