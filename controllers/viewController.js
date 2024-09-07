@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
 const helmet = require("helmet");
+const AppError = require("../utils/appError");
 
 helmet.contentSecurityPolicy({
   directives: {
@@ -26,6 +27,10 @@ exports.getTour = catchAsync(async (req, res, next) => {
     path: "reviews",
     fields: "review rating user",
   });
+
+  if (!tour) {
+    return next(new AppError("There is no tour with that name.", 404));
+  }
 
   //3) render template
   res
