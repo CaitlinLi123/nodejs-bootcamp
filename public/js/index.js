@@ -1,10 +1,13 @@
-import { login } from "./login";
+import { login, logout } from "./login";
 import { displayMap } from "./mapbox";
 import "@babel/polyfill";
+
+// Avoid sending too many files to the frontend
 
 //DOM ELEMENTS
 const mapBox = document.getElementById("map");
 const loginForm = document.querySelector(".form");
+const logOutBtn = document.querySelector(".nav__el--logout");
 
 //DELEGATION
 if (mapBox) {
@@ -22,3 +25,5 @@ if (loginForm) {
     login(email, password);
   });
 }
+
+if (logOutBtn) logOutBtn.addEventListener("click", logout);
