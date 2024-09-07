@@ -631,12 +631,6 @@ const login = async (email, password)=>{
         (0, _alert.showAlert)("error", error.response.data.message);
     }
 };
-document.querySelector(".form").addEventListener("submit", (e)=>{
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    login(email, password);
-});
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","axios":"9qbW2","./alert":"1jVcA"}],"5oERU":[function(require,module,exports) {
 exports.interopDefault = function(a) {
