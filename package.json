@@ -7,12 +7,27 @@
     "start:dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "sudo ndb server.js"
+    "debug": "sudo ndb server.js",
+    "watch:js": "parcel watch ./public/js/index.js --dist-dir ./public/js",
+    "build:js": "parcel watch ./public/js/index.js --dist-dir ./public/js"
+  },
+  "default": "./public/js/bundle.js",
+  "targets": {
+    "main": false,
+    "default": {
+      "distDir": "./public/js",
+      "engines": {
+        "browsers": "> 0.5%, last 2 versions, not dead"
+      }
+    }
   },
   "author": "yu",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-mongo-sanitize": "^2.2.0",
@@ -31,5 +46,10 @@
   },
   "engines": {
     "node": ">=10.0.0"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "parcel": "^2.12.0",
+    "process": "^0.11.10"
   }
 }

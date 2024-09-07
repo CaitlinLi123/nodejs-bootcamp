@@ -38,10 +38,16 @@ const createSendToken = (user, statusCode, res) => {
       user,
     },
   });
+  console.log("Finish creating a cookie!");
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body);
+  const newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+  });
   createSendToken(newUser, 201, res);
 });
 
@@ -73,7 +79,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     //the authorization header format is 'Bearer xxxxxx'
     token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
+
   if (!token) {
     //401: not authorized
     return next(
@@ -102,6 +111,39 @@ exports.protect = catchAsync(async (req, res, next) => {
   //grant access to protected route
   next();
 });
+
+//Only for render pages, no errors
+exports.isLoggedIn = async (req, res, next) => {
+  try {
+    if (req.cookies.jwt) {
+      //1) Verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+
+      //2)Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      //3) Check if user changed his or her password
+      if (currentUser.changePasswordAfter(decoded.iat)) {
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER, make him or her accessible to the templates
+
+      //res.locals: each response will have a local variable called user
+      res.locals.user = currentUser;
+      return next();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  next();
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
