@@ -17,14 +17,19 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     client_reference_id: req.params.touId,
     line_items: [
       {
-        name: `${tour.name} Tour`,
-        description: tour.summary,
-        images: ["https://www.natours.dev/img/tours/tour-2-cover.jpg"],
-        amount: tour.price * 100,
-        currency: "usd",
         quantity: 1,
+        price_data: {
+          currency: "usd",
+          unit_amount: tour.price * 100,
+          product_data: {
+            name: `${tour.name} Tour`,
+            description: tour.summary,
+            images: ["https://www.natours.dev/img/tours/tour-2-cover.jpg"],
+          },
+        },
       },
     ],
+    mode: "payment",
   });
 
   //3) Create session as response
