@@ -6,10 +6,16 @@ const Tour = require("../../models/tourModel");
 const User = require("../../models/userModel");
 const Review = require("../../models/reviewModel");
 
-const DB = process.env.DATABASE_LOCAL;
-mongoose.connect(DB).then(() => {
-  console.log("MongoDB connection successful!");
-});
+const DB = process.env.DATABASE.replace(
+  "<PASSWORD>",
+  process.env.DATABASE_PASSWORD
+);
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log("MongoDB connection successful!");
+  })
+  .catch((err) => console.log("ERROR", err));
 
 //READ JSON FILE
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, "utf-8"));

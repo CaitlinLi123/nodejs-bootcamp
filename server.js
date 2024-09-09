@@ -11,13 +11,21 @@ const app = require("./app");
 //this is set by nodejs
 // console.log(process.env);
 
-const DB = process.env.DATABASE_LOCAL;
+//local db:
+// const DB = process.env.DATABASE_LOCAL;
+
+//remote db:
+const DB = process.env.DATABASE.replace(
+  "<PASSWORD>",
+  process.env.DATABASE_PASSWORD
+);
+
 mongoose
   .connect(DB)
   .then(() => {
     console.log("MongoDB connection successful!");
   })
-  .catch((err) => console.log("ERROR"));
+  .catch((err) => console.log("ERROR", err));
 
 process.on("uncaughtException", (err) => {
   console.log("Uncaught Exception! 🤯 Shutting down...");
