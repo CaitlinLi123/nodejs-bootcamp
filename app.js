@@ -26,7 +26,22 @@ app.use(express.static(path.join(__dirname, "public"))); //serve static file
 // 1) GLOBAL MIDDLEWARE
 
 // Set security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        "script-src": [
+          "'self'",
+          "https://cdnjs.cloudflare.com",
+          "https://api.mapbox.com",
+          "https://js.stripe.com",
+        ],
+        // Add any other directives you may need for styles, fonts, etc.
+      },
+    },
+  })
+);
 
 // Developmet logging
 if (process.env.NODE_ENV === "development") {
@@ -72,6 +87,14 @@ app.use(
 // Test middleware, self-defined middleware
 app.use((req, res, next) => {
   console.log("hello from the middleware🏝️");
+  next();
+});
+
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "script-src 'self' https://cdnjs.cloudflare.com https://api.mapbox.com https://js.stripe.com blob:;"
+  );
   next();
 });
 
