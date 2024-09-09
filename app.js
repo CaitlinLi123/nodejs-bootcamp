@@ -13,6 +13,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const compression = require("compression");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -84,11 +85,7 @@ app.use(
   })
 );
 
-// Test middleware, self-defined middleware
-app.use((req, res, next) => {
-  console.log("hello from the middleware🏝️");
-  next();
-});
+app.use(compression());
 
 app.use((req, res, next) => {
   res.setHeader(

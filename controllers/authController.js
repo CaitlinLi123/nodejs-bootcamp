@@ -38,7 +38,6 @@ const createSendToken = (user, statusCode, res) => {
       user,
     },
   });
-  console.log("Finish creating a cookie!");
 };
 
 exports.signup = catchAsync(async (req, res, next) => {

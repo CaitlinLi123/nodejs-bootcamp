@@ -634,7 +634,6 @@ if (userPasswordForm) userPasswordForm.addEventListener("submit", async (e)=>{
     document.getElementById("password-confirm").value = "";
 });
 if (bookBtn) bookBtn.addEventListener("click", (e)=>{
-    console.log("click");
     e.target.textContent = "Processing...";
     const { tourId } = e.target.dataset;
     (0, _stripe.bookTour)(tourId);
@@ -12704,7 +12703,6 @@ var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
 const updateSettings = async (data, type)=>{
-    console.log(data);
     try {
         const url = type === "password" ? "http://127.0.0.1:3000/api/v1/users/updateMyPassword" : "http://127.0.0.1:3000/api/v1/users/updateMe";
         const res = await (0, _axiosDefault.default)({
