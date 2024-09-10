@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get(
   "/",
-  bookingController.webhookCheckout,
+  bookingController.createBookingCheckout,
   authController.isLoggedIn,
   viewController.getOverview
 );
