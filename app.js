@@ -5,6 +5,7 @@ const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const bookingRouter = require("./routes/bookingRoutes");
+const bookingController = require("./controllers/bookingController");
 const viewRouter = require("./routes/viewRoutes");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -70,6 +71,13 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again in an hour.",
 });
 app.use("/api", limiter);
+
+//stripe needs a raw string body, not a json format. So this is put above the body parser middleware
+app.post(
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  bookingController.webhookCheckout
+);
 
 // Body parser, reading data from body into req.body
 //set limit to the data size sent to server
