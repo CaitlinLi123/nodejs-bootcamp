@@ -18,6 +18,9 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
+//heroku acts as a proxy, which redirects and modifies the incoming request
+app.enable("trust proxy");
+
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
