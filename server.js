@@ -50,3 +50,12 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+
+//heroku every 24 hours will send this signal and shut down the server
+process.on("SIGTERM", () => {
+  console.log("👋SIGTERM RECEIVED. Shutting down gracefully.");
+  //will handle the unfinished request to the end
+  server.close(() => {
+    console.log("Process terminated!");
+  });
+});
