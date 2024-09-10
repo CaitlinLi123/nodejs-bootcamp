@@ -15,6 +15,7 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const app = express();
 
@@ -28,6 +29,16 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public"))); //serve static file
 
 // 1) GLOBAL MIDDLEWARE
+
+//Implement CORS
+app.use(cors());
+//Access-Control-Allow-Origin *
+
+//api: api.natours.com frontend natours.com
+//app.use(cors({origin:"https://www.natours.com"}))
+
+// used to request information about the communication options available for the target resource.
+app.options("*", cors());
 
 // Set security HTTP headers
 app.use(
