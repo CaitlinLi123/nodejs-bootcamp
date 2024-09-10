@@ -52,7 +52,7 @@
     "xss-clean": "^0.1.4"
   },
   "engines": {
-    "node": "^10"
+    "node": "^22"
   },
   "devDependencies": {
     "buffer": "^6.0.3",
